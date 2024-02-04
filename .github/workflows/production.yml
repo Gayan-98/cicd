@@ -26,8 +26,9 @@ jobs:
       with:
         node-version: 18.x
         cache: 'npm'
-      env:
-        CI: true
+        cache-dependency-path: |
+          app/node_modules
+          app/package-lock.json
 
     - name: Cache dependencies
       uses: actions/cache@v2
@@ -39,9 +40,6 @@ jobs:
     - name: Install dependencies
       run: npm install
 
-    # - name: Run tests
-    #   run: npm test
-
     - name: Build file
       run: npm run build
 
@@ -52,5 +50,6 @@ jobs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         netlify-auth-token: ${{ secrets.NETLIFY_AUTH_TOKEN }}
         netlify-site-id: ${{ secrets.NETLIFY_SITE_ID }}
-        build-dir: './app/build'  # Adjust if your build directory is different
+        build-dir: './app/build'
         comment-on-commit: true
+
