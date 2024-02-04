@@ -11,14 +11,30 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Use Node.js 18.x
+    - name: Debug
+      run: |
+        ls -R
+        echo "Current directory: $(pwd)"
+        echo "Contents of app directory: $(ls app)"
+        echo "Contents of app/node_modules directory: $(ls app/node_modules)"
+
+    - name: Clear npm cache
+      run: npm cache clean --force
+
+    - name: Use Node.js 18.x and Cache Dependencies
       uses: actions/setup-node@v2
       with:
         node-version: 18.x
         cache: 'npm'
-        cache-dependency-path: |
+      env:
+        CI: true
+
+    - name: Cache dependencies
+      uses: actions/cache@v2
+      with:
+        path: |
           app/node_modules
-          app/package-lock.json  # Add the lock file explicitly
+        key: ${{ runner.os }}-node-${{ hashFiles('app/package-lock.json') }}
 
     - name: Install dependencies
       run: npm install
