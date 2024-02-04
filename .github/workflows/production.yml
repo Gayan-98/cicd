@@ -3,7 +3,7 @@ name: "ci-cd pipeline"
 on:
   push:
     branches:
-    - main
+      - main
 
 jobs:
   build:
@@ -16,9 +16,9 @@ jobs:
       with:
         node-version: 18.x
         cache: 'npm'
-
-    - name: Clear npm cache
-      run: npm cache clean --force
+        cache-dependency-path: |
+          app/node_modules
+          app/package-lock.json  # Add the lock file explicitly
 
     - name: Install dependencies
       run: npm install
@@ -36,5 +36,5 @@ jobs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         netlify-auth-token: ${{ secrets.NETLIFY_AUTH_TOKEN }}
         netlify-site-id: ${{ secrets.NETLIFY_SITE_ID }}
-        build-dir: './build'
+        build-dir: './app/build'  # Adjust if your build directory is different
         comment-on-commit: true
